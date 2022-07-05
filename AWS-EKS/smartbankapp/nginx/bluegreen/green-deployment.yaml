@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sba-frontend-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sba-frontend
+      release: v1
+  template:
+    metadata:
+      labels:
+        app: sba-frontend
+        release: v1
+    spec:
+      containers:
+      - image: harishpandu43/sba-frontend:nginx
+        name: sba-frontend
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+          name: nginx
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
+        startupProbe:
+          httpGet:
+            path: /
+            port: 80
+          failureThreshold: 2
+          successThreshold: 1
+          periodSeconds: 10
+          initialDelaySeconds: 0
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: ambassador-nginx-config
