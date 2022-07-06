@@ -39,7 +39,7 @@ spec:
       - name: elastic-apm-agent 
         emptyDir: {}
       - name: efs-storage
-         persistentVolumeClaim:
+        persistentVolumeClaim:
            claimName: efs-claim
       initContainers:  #elast apm agents to see logs in kibana
       - name: elastic-java-agent 
