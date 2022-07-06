@@ -113,7 +113,7 @@ spec:
             value: mailuser
           - name: spring.mail.password
             value: mailpasswd
-      startupProbe: #if application fails container will stop
+        startupProbe: #if application fails container will stop
           httpGet:
             path: /
             port: 8080
@@ -121,7 +121,7 @@ spec:
           successThreshold: 1
           periodSeconds: 10
           initialDelaySeconds: 0
-      livenessProbe: #detects whether the app is running or not
+        livenessProbe: #detects whether the app is running or not
           httpGet:
             path: /
             port: 8080
@@ -129,7 +129,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           failureThreshold: 3
-      readinessProbe: #whether it is ready to serve requests wait till the app is up
+        readinessProbe: #whether it is ready to serve requests wait till the app is up
           httpGet:
             path: /
             port: 8080
