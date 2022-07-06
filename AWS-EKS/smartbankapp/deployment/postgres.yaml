@@ -39,7 +39,7 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  POSTGRES_DB: smartbank
-  POSTGRES_USER: smartbank
-  POSTGRES_PASSWORD: smartbankpwd
+  POSTGRES_DB: app
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
   PGDATA: /data/pgdata          
