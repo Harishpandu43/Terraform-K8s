@@ -1,20 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
+  labels:
+    app: postgres
   name: postgres
 spec:
+  ports:
+  - name: 5432-5432
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
   selector:
     app: postgres
-  ports:
-  - port: 5432
-    targetPort: 5432
+  type: ClusterIP
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
+  labels:
+    app: postgres
   name: postgres
 spec:
-  serviceName: "postgres"
   replicas: 1
   selector:
     matchLabels:
@@ -25,32 +31,13 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres
-        envFrom:
-        - configMapRef:
-            name: postgres-config
-        ports:
-        - containerPort: 5432
-          name: db
-        volumeMounts:
-        - name: data
-          mountPath: /data
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 1Gi
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgres-config
-data:
-  POSTGRES_DB: smartbank
-  POSTGRES_USER: smartbank
-  POSTGRES_PASSWORD: smartbankpwd
-  PGDATA: /data/pgdata          
+      - image: postgres
+        name: postgres
+        env:
+          - name: POSTGRES_USER
+            value: smartbank
+          - name: POSTGRES_PASSWORD
+            value: smartbank
+          - name: POSTGRES_DB
+            value: smartbankapp
+ 
