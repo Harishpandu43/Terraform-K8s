@@ -26,7 +26,7 @@ spec:
                   - key: app
                     operator: In  # NotIn, Exists, NotExists
                     values:
-                    - frontend
+                    - sba-frontend
                 topologyKey: "kubernetes.io/hostname"
       topologySpreadConstraints: #using this will make sure app is deployed across all zones high availability
       - maxSkew: 1
