@@ -72,7 +72,7 @@ spec:
                 name: app-secret
                 key: spring.datasource.password
           - name: spring.application.name
-            value: apiserver-rajesh
+            value: apiserver-harish
           - name: server.port
             value: "8080"
           - name: ELASTIC_APM_SERVER_URL 
