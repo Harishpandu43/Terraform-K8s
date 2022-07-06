@@ -12,5 +12,5 @@ spec:
     targetPort: 80
   selector:
     app: sba-frontend
-    release:v1
+    release: v1
   type: ClusterIP
