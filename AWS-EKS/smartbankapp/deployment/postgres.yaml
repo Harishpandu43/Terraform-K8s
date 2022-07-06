@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dbserver
+  name: postgres
 spec:
   selector:
-    app: postgre
+    app: postgres
   ports:
   - port: 5432
     targetPort: 5432
@@ -12,24 +12,24 @@ spec:
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgre
+  name: postgres
 spec:
-  serviceName: "postgre"
+  serviceName: "postgres"
   replicas: 1
   selector:
     matchLabels:
-      app: postgre
+      app: postgres
   template:
     metadata:
       labels:
-        app: postgre
+        app: postgres
     spec:
       containers:
-      - name: postgre
+      - name: postgres
         image: postgres
         envFrom:
         - configMapRef:
-            name: postgre-config
+            name: postgres-config
         ports:
         - containerPort: 5432
           name: db
@@ -48,7 +48,7 @@ spec:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgre-config
+  name: postgres-config
 data:
   POSTGRES_DB: smartbank
   POSTGRES_USER: smartbank
