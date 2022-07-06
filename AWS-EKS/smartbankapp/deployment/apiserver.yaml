@@ -18,30 +18,10 @@ spec:
         prometheus.io/port: "8888"
         prometheus.io/path: /actuator/prometheus        
     spec:
-      affinity:
-          podAffinity: #using this will make sure this will not deploy on frontend deployed nodes
-            requiredDuringSchedulingIgnoredDuringExecution:
-              - labelSelector:
-                  matchExpressions:
-                  - key: app
-                    operator: In  # NotIn, Exists, NotExists
-                    values:
-                    - sba-frontend
-                topologyKey: "kubernetes.io/hostname"
-      topologySpreadConstraints: #using this will make sure app is deployed across all zones high availability
-      - maxSkew: 1
-        topologyKey: topology.kubernetes.io/zone
-        whenUnsatisfiable: DoNotSchedule
-        labelSelector:
-          matchLabels:
-            app: apiserver
       volumes: 
       - name: elastic-apm-agent 
-        emptyDir: {}
-      - name: efs-storage
-        persistentVolumeClaim:
-           claimName: efs-claim
-      initContainers:  #elast apm agents to see logs in kibana
+        emptyDir: {}    
+      initContainers: 
       - name: elastic-java-agent 
         image: docker.elastic.co/observability/apm-agent-java:1.12.0 
         volumeMounts: 
@@ -72,7 +52,7 @@ spec:
                 name: app-secret
                 key: spring.datasource.password
           - name: spring.application.name
-            value: apiserver
+            value: apiserver-rajesh
           - name: server.port
             value: "8080"
           - name: ELASTIC_APM_SERVER_URL 
@@ -101,42 +81,157 @@ spec:
             value: "true"
           - name: management.metrics.tags.application
             value: apiserver-harish
-          # - name: cloud.aws.region.static
-            # valueFrom:
-              # configMapKeyRef:
-                # name: app-config
-                # key: cloud.aws.region.static
-          # - name: cloud.aws.credentials.access-key
-            # valueFrom:
-              # secretKeyRef:
-                # name: app-secret
-                # key: cloud.aws.credentials.access-key
-          # - name: cloud.aws.credentials.secret-key
-            # valueFrom:
-              # secretKeyRef:
-                # name: app-secret
-                # key: cloud.aws.credentials.secret-key
-        startupProbe: #if application fails container will stop
-          httpGet:
-            path: /
-            port: 8080
-          failureThreshold: 2
-          successThreshold: 1
-          periodSeconds: 10
-          initialDelaySeconds: 0
-        livenessProbe: #detects whether the app is running or not
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 3
-        readinessProbe: #whether it is ready to serve requests wait till the app is up
-          httpGet:
-            path: /
-            port: 8080
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          successThreshold: 1
-          failureThreshold: 3
+          - name: spring.profiles.active
+            value: SQS,SES
+          - name: cloud.aws.region.static
+            value: ap-south-1
+          - name: cloud.aws.credentials.access-key
+            value: accesskey
+          - name: cloud.aws.credentials.secret-key
+            value: secretkey
+          - name: spring.mail.username
+            value: mailuser
+          - name: spring.mail.password
+            value: mailpasswd        
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   labels:
+#     app: apiserver
+#   name: apiserver
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: apiserver
+#   template:
+#     metadata:
+#       labels:
+#         app: apiserver
+#       annotations:
+#         prometheus.io/scrape: "true"
+#         prometheus.io/port: "8888"
+#         prometheus.io/path: /actuator/prometheus        
+#     spec:
+#       affinity:
+#           podAffinity: #using this will make sure this will not deploy on frontend deployed nodes
+#             requiredDuringSchedulingIgnoredDuringExecution:
+#               - labelSelector:
+#                   matchExpressions:
+#                   - key: app
+#                     operator: In  # NotIn, Exists, NotExists
+#                     values:
+#                     - sba-frontend
+#                 topologyKey: "kubernetes.io/hostname"
+#       topologySpreadConstraints: #using this will make sure app is deployed across all zones high availability
+#       - maxSkew: 1
+#         topologyKey: topology.kubernetes.io/zone
+#         whenUnsatisfiable: DoNotSchedule
+#         labelSelector:
+#           matchLabels:
+#             app: apiserver
+#       volumes: 
+#       - name: elastic-apm-agent 
+#         emptyDir: {}
+#       - name: efs-storage
+#         persistentVolumeClaim:
+#            claimName: efs-claim
+#       initContainers:  #elast apm agents to see logs in kibana
+#       - name: elastic-java-agent 
+#         image: docker.elastic.co/observability/apm-agent-java:1.12.0 
+#         volumeMounts: 
+#         - mountPath: /elastic/apm/agent 
+#           name: elastic-apm-agent 
+#         command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']     
+#       containers:
+#       - image: brainupgrade/sba-apiserver:usage
+#         name: sba-apiserver
+#         imagePullPolicy: Always
+#         volumeMounts: 
+#         - mountPath: /elastic/apm/agent 
+#           name: elastic-apm-agent          
+#         env:
+#           - name: spring.datasource.url
+#             valueFrom:
+#               configMapKeyRef:
+#                 name: app-config
+#                 key: spring.datasource.url
+#           - name: spring.datasource.username
+#             valueFrom:
+#               secretKeyRef:
+#                 name: app-secret
+#                 key: spring.datasource.username
+#           - name: spring.datasource.password
+#             valueFrom:
+#               secretKeyRef:
+#                 name: app-secret
+#                 key: spring.datasource.password
+#           - name: spring.application.name
+#             value: apiserver
+#           - name: server.port
+#             value: "8080"
+#           - name: ELASTIC_APM_SERVER_URL 
+#             valueFrom:
+#               configMapKeyRef:
+#                 name: app-config
+#                 key: ELASTIC_APM_SERVER_URL
+#           - name: ELASTIC_APM_APPLICATION_PACKAGES 
+#             valueFrom:
+#               configMapKeyRef:
+#                 name: app-config
+#                 key: ELASTIC_APM_APPLICATION_PACKAGES
+#           - name: ELASTIC_APM_SERVICE_NAME 
+#             value: "apiserver-harish" 
+#           - name: ELASTIC_APM_ENVIRONMENT 
+#             value: prod
+#           - name: ELASTIC_APM_LOG_LEVEL 
+#             value: DEBUG 
+#           - name: JAVA_TOOL_OPTIONS 
+#             value: -javaagent:/elastic/apm/agent/elastic-apm-agent.jar               
+#           - name: management.endpoints.web.exposure.include
+#             value: "*"
+#           - name: management.server.port
+#             value: "8888"
+#           - name: management.metrics.web.server.request.autotime.enabled
+#             value: "true"
+#           - name: management.metrics.tags.application
+#             value: apiserver-harish
+#           # - name: cloud.aws.region.static
+#             # valueFrom:
+#               # configMapKeyRef:
+#                 # name: app-config
+#                 # key: cloud.aws.region.static
+#           # - name: cloud.aws.credentials.access-key
+#             # valueFrom:
+#               # secretKeyRef:
+#                 # name: app-secret
+#                 # key: cloud.aws.credentials.access-key
+#           # - name: cloud.aws.credentials.secret-key
+#             # valueFrom:
+#               # secretKeyRef:
+#                 # name: app-secret
+#                 # key: cloud.aws.credentials.secret-key
+#         startupProbe: #if application fails container will stop
+#           httpGet:
+#             path: /
+#             port: 8080
+#           failureThreshold: 2
+#           successThreshold: 1
+#           periodSeconds: 10
+#           initialDelaySeconds: 0
+#         livenessProbe: #detects whether the app is running or not
+#           httpGet:
+#             path: /
+#             port: 8080
+#           initialDelaySeconds: 0
+#           periodSeconds: 10
+#           successThreshold: 1
+#           failureThreshold: 3
+#         readinessProbe: #whether it is ready to serve requests wait till the app is up
+#           httpGet:
+#             path: /
+#             port: 8080
+#           initialDelaySeconds: 0
+#           periodSeconds: 10
+#           successThreshold: 1
+#           failureThreshold: 3
