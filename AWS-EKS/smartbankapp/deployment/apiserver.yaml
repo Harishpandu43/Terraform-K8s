@@ -53,7 +53,20 @@ spec:
           name: elastic-apm-agent          
         env:
           - name: spring.datasource.url
-            value: jdbc:postgresql://postgres:5432/app
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: spring.datasource.url
+          - name: spring.datasource.username
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: spring.datasource.username
+          - name: spring.datasource.password
+            valueFrom:
+              secretKeyRef:
+                name: app-secret
+                key: spring.datasource.password
           - name: spring.application.name
             value: apiserver-harish
           - name: server.port
