@@ -137,7 +137,7 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           failureThreshold: 3
-      volumes:
-      - name: efs-storage
-        persistentVolumeClaim:
-          claimName: efs-claim
+#       volumes:
+#       - name: efs-storage
+#         persistentVolumeClaim:
+#           claimName: efs-claim
