@@ -49,7 +49,7 @@ spec:
           name: elastic-apm-agent 
         command: ['cp', '-v', '/usr/agent/elastic-apm-agent.jar', '/elastic/apm/agent']     
       containers:
-      - image: brainupgrade/sba-apiserver:usage
+      - image: hub.brainupgrade.net/harish/apiserver:usage
         name: sba-apiserver
         imagePullPolicy: Always
         volumeMounts: 
