@@ -26,7 +26,7 @@ resource "aws_autoscaling_policy" "test" {
   scaling_adjustment     = 2
   cooldown               = 180
 }
-#data "aws_vpc" "main"{
+#data "aws_vpc" "harish-vpc"{
 #    id="vpc-0fa1dcbf4951c2e69"
 #}
 
@@ -59,5 +59,5 @@ resource "aws_lb_target_group" "harish-ui-tg" {
   name     = "test"
   port     = 80
   protocol = "TCP"
-  vpc_id   = aws_vpc.main.id
+  vpc_id   = aws_vpc.harish-vpc.id
 }
