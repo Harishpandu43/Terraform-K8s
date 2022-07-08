@@ -2,7 +2,7 @@ resource "aws_launch_template" "harish-ui-template" {
   name_prefix   = "harish-ui-template"
   image_id      = "ami-0dc633995664f082b"
   instance_type = "t3a.nano"
-  user_data = filebase64("app-launch-ui.sh")
+  user_data = filebase64("userdata-ui.sh")
 }
 resource "aws_autoscaling_group" "harish-ui-asg" {
   availability_zones        = ["ap-south-1a"]
