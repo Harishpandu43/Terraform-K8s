@@ -67,57 +67,57 @@ resource "aws_eip" "nat_gateway" {
 
 resource "aws_nat_gateway" "harish-vpc-nat-gw" {
     allocation_id = aws_eip.nat_gateway.id
-    subnet_id     = aws_subnet.kushagra-vpc-pb-1a.id
+    subnet_id     = aws_subnet.harish-vpc-pb-1a.id
 
     tags = {
-        Name = "kushagra-vpc-nat-gw"
+        Name = "harish-vpc-nat-gw"
     }
-    depends_on = [aws_internet_gateway.kushagra-vpc-igw]
+    depends_on = [aws_internet_gateway.harish-vpc-igw]
 }
 
 #ROUTE-TABLE CREATION
 
-resource "aws_route_table" "kushagra-vpc-rt-pb" {
-    vpc_id = aws_vpc.kushagra-vpc.id
+resource "aws_route_table" "harish-vpc-rt-pb" {
+    vpc_id = aws_vpc.harish-vpc.id
     route{
         cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.kushagra-vpc-igw.id
+    gateway_id = aws_internet_gateway.harish-vpc-igw.id
     }
     tags ={
-        Name = "kushagra-vpc-rt-pb"
+        Name = "harish-vpc-rt-pb"
     }
 }
 
 
-resource "aws_route_table" "kushagra-vpc-rt-pvt" {
-  vpc_id = aws_vpc.kushagra-vpc.id
+resource "aws_route_table" "harish-vpc-rt-pvt" {
+  vpc_id = aws_vpc.harish-vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.kushagra-vpc-nat-gw.id
+    nat_gateway_id = aws_nat_gateway.harish-vpc-nat-gw.id
   }
   tags = {
-    Name = "kushagra-vpc-rt-pvt"
+    Name = "harish-vpc-rt-pvt"
   }
 }
 
 
 #ROUTE-TABLE ASSOCIATIONG
 resource "aws_route_table_association" "pb-1a" {
-    subnet_id      = aws_subnet.kushagra-vpc-pb-1a.id
-    route_table_id = aws_route_table.kushagra-vpc-rt-pb.id
+    subnet_id      = aws_subnet.harish-vpc-pb-1a.id
+    route_table_id = aws_route_table.harish-vpc-rt-pb.id
 }
 
 resource "aws_route_table_association" "pb-1b" {
-    subnet_id      = aws_subnet.kushagra-vpc-pb-1b.id
-    route_table_id = aws_route_table.kushagra-vpc-rt-pb.id
+    subnet_id      = aws_subnet.harish-vpc-pb-1b.id
+    route_table_id = aws_route_table.harish-vpc-rt-pb.id
 }
 
 resource "aws_route_table_association" "pvt-1a" {
-    subnet_id      = aws_subnet.kushagra-vpc-pvt-1a.id
-    route_table_id = aws_route_table.kushagra-vpc-rt-pvt.id
+    subnet_id      = aws_subnet.harish-vpc-pvt-1a.id
+    route_table_id = aws_route_table.harish-vpc-rt-pvt.id
 }
 
 resource "aws_route_table_association" "pvt-1b" {
-    subnet_id      = aws_subnet.kushagra-vpc-pvt-1b.id
-    route_table_id = aws_route_table.kushagra-vpc-rt-pvt.id
+    subnet_id      = aws_subnet.harish-vpc-pvt-1b.id
+    route_table_id = aws_route_table.harish-vpc-rt-pvt.id
 }
