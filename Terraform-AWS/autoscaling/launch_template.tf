@@ -1,13 +1,13 @@
-resource "aws_launch_template" "harish-template" {
-    name_prefix = "harish-template"
+resource "aws_launch_template" "sigma-template" {
+    name_prefix = "sigma-template"
     image_id = "ami-08df646e18b182346"
     instance_type = "t3a.nano"
     user_data = filebase64("app-launch.sh")
 }
 
-resource "aws_autoscaling_group" "harish-autoscale" {
+resource "aws_autoscaling_group" "sigma-autoscale" {
     availability_zones        = ["ap-south-1a"]
-    name                      = "harish-autoscale"
+    name                      = "sigma-autoscale"
     max_size                  = 3
     min_size                  = 1
     health_check_grace_period = 180
@@ -15,16 +15,16 @@ resource "aws_autoscaling_group" "harish-autoscale" {
     force_delete              = true
     termination_policies      = ["OldestInstance"]
     launch_template {
-        id      = aws_launch_template.harish-template.id
+        id      = aws_launch_template.sigma-template.id
         version = "$Latest"
     }
-    target_group_arns = [ aws_lb_target_group.harish.arn ]
+    target_group_arns = [ aws_lb_target_group.sigma.arn ]
 }
 
 resource "aws_autoscaling_policy" "test" {
   name                   = "test"
   adjustment_type        = "ChangeInCapacity"
-  autoscaling_group_name = aws_autoscaling_group.harish-autoscale.name
+  autoscaling_group_name = aws_autoscaling_group.sigma-autoscale.name
   scaling_adjustment     = 2
   cooldown               = 180
 }
@@ -36,7 +36,7 @@ data "aws_vpc" "main"{
 data "aws_subnet_ids" "test" {
   vpc_id = data.aws_vpc.main.id
   tags = {  
-    Name = "harish-vpc-pb-1a"
+    Name = "sigma-vpc-pb-1a"
   }
 }
 
@@ -45,25 +45,25 @@ data "aws_subnet" "test" {
     id = each.value
 }
 
-resource "aws_lb" "harish-loadbalancer"{
-    name = "harish-loadbalancer"
+resource "aws_lb" "sigma-loadbalancer"{
+    name = "sigma-loadbalancer"
     internal = false
     load_balancer_type = "network"
       subnets            = [for subnet in data.aws_subnet.test : subnet.id]
 }
 
-resource "aws_lb_listener" "harish-loadbalancer" {
-    load_balancer_arn = aws_lb.harish-loadbalancer.arn
+resource "aws_lb_listener" "sigma-loadbalancer" {
+    load_balancer_arn = aws_lb.sigma-loadbalancer.arn
     port = 80
     protocol = "TCP"
     default_action {
         type="forward"
-        target_group_arn = aws_lb_target_group.harish.arn
+        target_group_arn = aws_lb_target_group.sigma.arn
     }
 }
 
-resource "aws_lb_target_group" "harish" {
-  name     = "harish"
+resource "aws_lb_target_group" "sigma" {
+  name     = "sigma"
   port     = 80
   protocol = "TCP"
   vpc_id   = data.aws_vpc.main.id
