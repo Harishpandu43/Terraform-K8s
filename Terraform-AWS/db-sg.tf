@@ -1,7 +1,7 @@
-resource "aws_security_group" "harish-vpc-sg-db" {
-  name = "harish-vpc-sg-db"
+resource "aws_security_group" "sigma-vpc-sg-db" {
+  name = "sigma-vpc-sg-db"
   description = "security group DB"
-  vpc_id      = aws_vpc.harish-vpc.id
+  vpc_id      = aws_vpc.sigma-vpc.id
 ingress {
     from_port   = 5432
     to_port     = 5432
@@ -23,6 +23,6 @@ egress {
     cidr_blocks = ["0.0.0.0/0"]
   }
 tags = {
-    Name = "harish-vpc-sg-db"
+    Name = "sigma-vpc-sg-db"
   }
 }
