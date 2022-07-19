@@ -14,7 +14,7 @@ spec:
         app: dynamodb
     spec:
       containers:
-        image: hub.brainupgrade.net/harish/dynamodb:new
-        imagePullPolicy: IfNotPresent
-        name: dynamodb
+       - image: hub.brainupgrade.net/harish/dynamodb:new
+         imagePullPolicy: IfNotPresent
+         name: dynamodb
    
