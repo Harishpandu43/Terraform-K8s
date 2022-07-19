@@ -1,48 +1,48 @@
 #VPC Creation
-resource "aws_vpc" "harish-vpc" {
+resource "aws_vpc" "sigma-vpc" {
     cidr_block = "10.0.0.0/16"
     enable_dns_support = true
     enable_dns_hostnames = true
     tags = {
-      Name = "harish-vpc"
+      Name = "sigma-vpc"
     }
 }
 
 #SUBNET CREATION
 
-resource "aws_subnet" "harish-vpc-pb-1a" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_subnet" "sigma-vpc-pb-1a" {
+    vpc_id = aws_vpc.sigma-vpc.id
     cidr_block = "10.0.1.0/24"
     availability_zone = "ap-south-1a"
         map_public_ip_on_launch = true
     tags = {
-      Name = "harish-vpc-pb-1a"
+      Name = "sigma-vpc-pb-1a"
     }
 }
 
-resource "aws_subnet" "harish-vpc-pvt-1a" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_subnet" "sigma-vpc-pvt-1a" {
+    vpc_id = aws_vpc.sigma-vpc.id
   cidr_block = "10.0.2.0/24"
   availability_zone = "ap-south-1a"
     tags ={
-        Name = "harish-vpc-pvt-1a"
+        Name = "sigma-vpc-pvt-1a"
     }
 }
 
-resource "aws_subnet" "harish-vpc-pb-1b" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_subnet" "sigma-vpc-pb-1b" {
+    vpc_id = aws_vpc.sigma-vpc.id
     cidr_block = "10.0.3.0/24"
     availability_zone = "ap-south-1b"
     map_public_ip_on_launch = true
 
     tags ={
-        Name = "harish-vpc-pb-1b"
+        Name = "sigma-vpc-pb-1b"
     }
 }
 
 
-resource "aws_subnet" "harish-vpc-pvt-1b" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_subnet" "sigma-vpc-pvt-1b" {
+    vpc_id = aws_vpc.sigma-vpc.id
   cidr_block = "10.0.4.0/24"
   availability_zone = "ap-south-1b"
     tags ={
