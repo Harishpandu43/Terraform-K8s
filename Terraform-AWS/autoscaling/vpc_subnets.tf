@@ -46,16 +46,16 @@ resource "aws_subnet" "sigma-vpc-pvt-1b" {
   cidr_block = "10.0.4.0/24"
   availability_zone = "ap-south-1b"
     tags ={
-        Name = "harish-vpc-pvt-1b"
+        Name = "sigma-vpc-pvt-1b"
     }
 }
 
 #INTERNET_GATEWAY => Only for Public Subnets
 
-resource "aws_internet_gateway" "harish-vpc-igw" {
-  vpc_id = aws_vpc.harish-vpc.id
+resource "aws_internet_gateway" "sigma-vpc-igw" {
+  vpc_id = aws_vpc.sigma-vpc.id
   tags ={
-    Name = "harish-vpc-igw"
+    Name = "sigma-vpc-igw"
   }
 }
 
@@ -65,38 +65,38 @@ resource "aws_eip" "nat_gateway" {
   vpc = true
 }
 
-resource "aws_nat_gateway" "harish-vpc-nat-gw" {
+resource "aws_nat_gateway" "sigma-vpc-nat-gw" {
     allocation_id = aws_eip.nat_gateway.id
-    subnet_id     = aws_subnet.harish-vpc-pb-1a.id
+    subnet_id     = aws_subnet.sigma-vpc-pb-1a.id
 
     tags = {
-        Name = "harish-vpc-nat-gw"
+        Name = "sigma-vpc-nat-gw"
     }
-    depends_on = [aws_internet_gateway.harish-vpc-igw]
+    depends_on = [aws_internet_gateway.sigma-vpc-igw]
 }
 
 #ROUTE-TABLE CREATION
 
-resource "aws_route_table" "harish-vpc-rt-pb" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_route_table" "sigma-vpc-rt-pb" {
+    vpc_id = aws_vpc.sigma-vpc.id
     route{
         cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.harish-vpc-igw.id
+    gateway_id = aws_internet_gateway.sigma-vpc-igw.id
     }
     tags ={
-        Name = "harish-vpc-rt-pb"
+        Name = "sigma-vpc-rt-pb"
     }
 }
 
 
-resource "aws_route_table" "harish-vpc-rt-pvt" {
-  vpc_id = aws_vpc.harish-vpc.id
+resource "aws_route_table" "sigma-vpc-rt-pvt" {
+  vpc_id = aws_vpc.sigma-vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.harish-vpc-nat-gw.id
+    nat_gateway_id = aws_nat_gateway.sigma-vpc-nat-gw.id
   }
   tags = {
-    Name = "harish-vpc-rt-pvt"
+    Name = "sigma-vpc-rt-pvt"
   }
 }
 
