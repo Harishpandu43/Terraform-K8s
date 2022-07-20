@@ -6,4 +6,4 @@ systemctl start docker
 systemctl enable awslogsd
 systemctl start awslogsd
 
-docker run --log-driver=awslogs --log-opt awslogs-region=ap-south-1 --log-opt awslogs-group=sigma-frontend --log-opt awslogs-create-group=true -p 80:3000 --env REACT_APP_API_URL=http://<API SERVER LOADBALANCER DNS URL>:80/ -d harishpandu43/sba-frontend
+docker run -d --log-driver=awslogs --log-opt awslogs-region=ap-south-1 --log-opt awslogs-group=sigma-apiserver --log-opt awslogs-create-group=true -p 80:8080 --env spring.datasource.username=postgres --env spring.datasource.password=postgres --env spring.datasource.url=jdbc:postgresql://sigma-db-postgres.c67d3uautcvu.us-west-2.rds.amazonaws.com:5432/smartbankapp harishpandu43/sba_api_image

@@ -1,5 +1,5 @@
-resource "aws_security_group" "harish-vpc-sg" {
-    vpc_id = aws_vpc.harish-vpc.id
+resource "aws_security_group" "sigma-vpc-sg" {
+    vpc_id = aws_vpc.sigma-vpc.id
   egress {
     from_port   = 0
     to_port     = 0
@@ -35,6 +35,6 @@ resource "aws_security_group" "harish-vpc-sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags={
-    Name = "harish-vpc-sg-main"
+    Name = "sigma-vpc-sg-main"
   }
 }
